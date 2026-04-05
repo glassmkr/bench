@@ -1,0 +1,32 @@
+{
+  "name": "@glassmkr/bench-netdata",
+  "version": "0.1.0",
+  "description": "MCP server for Netdata monitoring. Query CPU, memory, disk, network, alarms, and any chart.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "bench-netdata": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod 755 dist/index.js",
+    "test": "node --test dist/tests/*.test.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["mcp", "netdata", "monitoring", "infrastructure", "ai-agents"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glassmkr/bench.git",
+    "directory": "packages/netdata"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@glassmkr/bench-shared": "*",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
