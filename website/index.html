@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bench - Infrastructure Tools for AI Agents</title>
+  <meta name="description" content="Open-source MCP servers for Netdata, IPMI, Proxmox, and more. Each tool does one thing well. Built by Glassmkr.">
+  <link rel="icon" href="https://glassmkr.com/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Bench - Infrastructure Tools for AI Agents">
+  <meta property="og:description" content="Open-source MCP servers for Netdata, IPMI, Proxmox, and more.">
+  <meta property="og:url" content="https://bench.glassmkr.com">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@glassmkr_">
+  <link rel="stylesheet" href="https://glassmkr.com/assets/base.css">
+  <style>
+    .hero { padding: 80px 0 60px; text-align: center; }
+    .hero h1 { font-size: clamp(36px, 5vw, 52px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 24px; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero .subtitle { font-size: 18px; color: var(--text-secondary); font-weight: 400; margin-bottom: 8px; }
+    .hero .desc { font-size: 14px; color: var(--text-tertiary); max-width: 520px; margin: 0 auto 32px; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 32px; }
+    .install-cmd { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 8px; padding: 12px 20px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; color: var(--accent); display: inline-block; cursor: pointer; transition: all 0.2s; }
+    .install-cmd:hover { border-color: rgba(255, 170, 50, 0.2); background: var(--surface-hover); }
+    .install-cmd .copy-hint { font-size: 11px; color: var(--text-tertiary); margin-left: 12px; }
+    .section-header { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 24px; }
+    section { padding: 48px 0; }
+    .tools-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+    .tool-card { background: var(--glass-gradient); border: 1px solid var(--surface-border); border-radius: 12px; padding: 32px; transition: all 0.3s; }
+    .tool-card:hover { border-color: rgba(255, 255, 255, 0.1); background: var(--surface-hover); }
+    .tool-card + .tool-card { margin-top: 16px; }
+    .tool-card.has-detail { border-radius: 12px 12px 0 0; margin-bottom: 0; }
+    .tool-card .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .tool-card .card-title { display: flex; align-items: center; gap: 14px; }
+    .tool-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: var(--accent-glow); border: 1px solid rgba(255, 170, 50, 0.15); }
+    .tool-card h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+    .tool-card .description { color: var(--text-secondary); font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+    .tool-card .meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .tool-card .meta-item { font-size: 12px; color: var(--text-tertiary); }
+    .tool-card .meta-item strong { color: var(--text-secondary); font-weight: 500; }
+    .tool-card .meta-cmd { font-size: 12px; color: var(--accent); background: var(--warm-glow); padding: 4px 10px; border-radius: 4px; font-family: 'SF Mono', 'Fira Code', monospace; }
+    .view-tools-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; color: var(--accent); cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+    .view-tools-btn:hover { text-decoration: underline; }
+    .tool-detail { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: var(--surface); border: 1px solid var(--surface-border); border-top: none; border-radius: 0 0 12px 12px; padding: 0 24px; }
+    .tool-detail.expanded { max-height: 3000px; padding: 24px; }
+    .tool-detail .td-name { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; color: var(--accent); font-weight: 500; }
+    .tool-detail .td-desc { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+    .tool-detail .td-input { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+    .tool-detail .td-section { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--surface-border); }
+    .tool-detail .td-section:first-child { margin-top: 0; }
+    .tool-detail .td-item { margin-bottom: 16px; }
+    .tool-detail .write-badge { font-size: 11px; color: var(--yellow); margin-left: 8px; }
+    .tool-detail .docs-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--surface-border); font-size: 13px; color: var(--accent); text-decoration: none; }
+    .tool-detail .docs-link:hover { text-decoration: underline; }
+    .code-block { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--surface-border); border-radius: 8px; overflow: hidden; }
+    .code-block .code-header { padding: 16px 24px; border-bottom: 1px solid var(--surface-border); font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .code-block pre { padding: 20px 24px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; color: var(--text-secondary); }
+    .code-block pre .key { color: var(--accent); }
+    .code-block pre .string { color: var(--green); }
+    .philosophy { color: var(--text-secondary); font-size: 15px; line-height: 1.8; max-width: 640px; }
+    .philosophy em { color: var(--text-primary); font-style: italic; }
+    .philosophy .highlight { color: var(--accent); }
+    .philosophy a { color: var(--accent); text-decoration: none; }
+    .philosophy a:hover { text-decoration: underline; }
+    @media (max-width: 600px) { .hero h1 { font-size: 32px; } .hero-actions { flex-direction: column; align-items: center; } }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+  <div class="glass-edges"><div class="glass-edge"></div><div class="glass-edge"></div><div class="glass-edge"></div></div>
+
+  <header style="padding: 24px 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="https://bench.glassmkr.com" class="logo logo-link">BENCH</a>
+      <nav style="display: flex; gap: 24px; align-items: center;">
+        <a href="https://forge.glassmkr.com" class="btn btn-ghost btn-small">Forge</a>
+        <a href="https://bench.glassmkr.com" class="btn btn-ghost btn-small" style="color:var(--text-primary)">Bench</a>
+        <a href="https://glassmkr.com" class="btn btn-ghost btn-small">Glassmkr</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero">
+      <p class="section-label" style="text-align: center; margin-bottom: 16px;">Open-source MCP servers · Built by Glassmkr</p>
+      <h1>Bench</h1>
+      <p class="subtitle">Infrastructure tools for AI agents. Each one does one thing well.</p>
+      <p class="desc">Open-source MCP servers for Netdata, IPMI, Proxmox, and more. Built by Glassmkr.</p>
+      <div class="install-cmd" onclick="navigator.clipboard.writeText('npx @glassmkr/bench-netdata');this.querySelector('.copy-hint').textContent='Copied!'">
+        npx @glassmkr/bench-netdata<span class="copy-hint">click to copy</span>
+      </div>
+      <div class="hero-actions">
+        <a href="https://github.com/glassmkr/bench" class="btn btn-primary">View on GitHub</a>
+        <a href="#tools" class="btn btn-ghost">Browse Tools &#8595;</a>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <section id="tools">
+      <h2 class="section-header">Tools</h2>
+      <div class="tools-grid">
+
+        <!-- bench-netdata -->
+        <div class="tool-card has-detail" id="card-netdata">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,170,50,0.9)" stroke-width="1.5"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></div>
+              <h3>bench-netdata</h3>
+            </div>
+            <span class="tag tag-active">stable</span>
+          </div>
+          <p class="description">Structured access to Netdata monitoring data. CPU, RAM, disk, network, alarms, chart history. Any Netdata instance, anywhere.</p>
+          <div class="meta">
+            <span class="meta-item"><strong>10</strong> tools (all read)</span>
+            <span class="meta-item">Connects to <strong>Netdata</strong></span>
+            <span class="meta-cmd">npx @glassmkr/bench-netdata</span>
+          </div>
+          <button class="view-tools-btn" onclick="toggleDetail('netdata')">View 10 tools <span id="arrow-netdata">&#9660;</span></button>
+        </div>
+        <div class="tool-detail" id="detail-netdata">
+          <div class="td-section">Read Tools (10)</div>
+          <div class="td-item"><div class="td-name">get_server_overview</div><div class="td-desc">Hostname, OS, uptime, CPU count, total RAM, Netdata version.</div></div>
+          <div class="td-item"><div class="td-name">get_cpu_usage</div><div class="td-desc">CPU utilization breakdown and load averages.</div><div class="td-input">Input: period_seconds (optional, default 60)</div></div>
+          <div class="td-item"><div class="td-name">get_memory_usage</div><div class="td-desc">RAM and swap usage in MB and percent.</div></div>
+          <div class="td-item"><div class="td-name">get_disk_usage</div><div class="td-desc">Disk space for all mounted filesystems.</div><div class="td-input">Input: mount_point (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_disk_io</div><div class="td-desc">Read/write rates per device.</div><div class="td-input">Input: device (optional), period_seconds (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_network_traffic</div><div class="td-desc">Interface traffic: sent and received.</div><div class="td-input">Input: interface (optional), period_seconds (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_chart_data</div><div class="td-desc">Raw time-series data from any Netdata chart. The power tool.</div><div class="td-input">Input: chart (required), after, before, points</div></div>
+          <div class="td-item"><div class="td-name">list_charts</div><div class="td-desc">Lists all available charts on the Netdata instance.</div><div class="td-input">Input: filter (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_alarms</div><div class="td-desc">Active warnings and criticals.</div><div class="td-input">Input: status (optional: warning, critical, all)</div></div>
+          <div class="td-item"><div class="td-name">get_alarm_log</div><div class="td-desc">Recent alarm transitions.</div><div class="td-input">Input: last_n (optional, default 20)</div></div>
+          <a class="docs-link" href="https://github.com/glassmkr/bench/tree/main/packages/netdata">Full documentation &rarr;</a>
+        </div>
+
+        <!-- bench-ipmi -->
+        <div class="tool-card has-detail" id="card-ipmi" style="margin-top:16px">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,170,50,0.9)" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M6 21h12"/><path d="M12 17v4"/><circle cx="12" cy="10" r="3"/></svg></div>
+              <h3>bench-ipmi</h3>
+            </div>
+            <span class="tag tag-active">stable</span>
+          </div>
+          <p class="description">Hardware management via IPMI/BMC. Power control, sensor readings, event logs, boot device selection. The tools hosting companies use every day.</p>
+          <div class="meta">
+            <span class="meta-item"><strong>12</strong> tools (8 read, 4 write)</span>
+            <span class="meta-item">Connects to <strong>IPMI/BMC</strong></span>
+            <span class="meta-cmd">npx @glassmkr/bench-ipmi</span>
+          </div>
+          <button class="view-tools-btn" onclick="toggleDetail('ipmi')">View 12 tools <span id="arrow-ipmi">&#9660;</span></button>
+        </div>
+        <div class="tool-detail" id="detail-ipmi">
+          <div class="td-section">Read Tools (8)</div>
+          <div class="td-item"><div class="td-name">get_power_status</div><div class="td-desc">Current power state: on, off, or unknown.</div></div>
+          <div class="td-item"><div class="td-name">get_sensor_readings</div><div class="td-desc">All BMC sensors: temperatures, fan speeds, voltages, power draw.</div><div class="td-input">Input: sensor_type (optional: temperature, fan, voltage, power, all)</div></div>
+          <div class="td-item"><div class="td-name">get_event_log</div><div class="td-desc">System Event Log entries.</div><div class="td-input">Input: last_n (optional, default 20)</div></div>
+          <div class="td-item"><div class="td-name">get_bmc_info</div><div class="td-desc">BMC firmware version, manufacturer, product info.</div></div>
+          <div class="td-item"><div class="td-name">get_boot_device</div><div class="td-desc">Current boot device setting and persistence flag.</div></div>
+          <div class="td-item"><div class="td-name">get_chassis_status</div><div class="td-desc">Full chassis: power state, last power event, intrusion, fault.</div></div>
+          <div class="td-item"><div class="td-name">get_lan_info</div><div class="td-desc">BMC network configuration: IP, subnet, gateway, MAC.</div><div class="td-input">Input: channel (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_sol_info</div><div class="td-desc">Serial Over LAN configuration and status.</div></div>
+          <div class="td-section">Write Tools (4, require confirmation)</div>
+          <div class="td-item"><div class="td-name">power_control<span class="write-badge">write</span></div><div class="td-desc">Power on, off, cycle, reset, or soft shutdown.</div><div class="td-input">Input: action (required: on, off, cycle, reset, soft)</div></div>
+          <div class="td-item"><div class="td-name">set_boot_device<span class="write-badge">write</span></div><div class="td-desc">Change next boot device.</div><div class="td-input">Input: device (required: pxe, disk, bios, cdrom), persistent (optional)</div></div>
+          <div class="td-item"><div class="td-name">clear_event_log<span class="write-badge">write</span></div><div class="td-desc">Clear the System Event Log.</div></div>
+          <div class="td-item"><div class="td-name">confirm_action</div><div class="td-desc">Execute a previously requested write operation.</div><div class="td-input">Input: token (required)</div></div>
+          <a class="docs-link" href="https://github.com/glassmkr/bench/tree/main/packages/ipmi">Full documentation &rarr;</a>
+        </div>
+
+        <!-- bench-proxmox -->
+        <div class="tool-card has-detail" id="card-proxmox" style="margin-top:16px">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,170,50,0.9)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+              <h3>bench-proxmox</h3>
+            </div>
+            <span class="tag tag-active">stable</span>
+          </div>
+          <p class="description">The first MCP server for Proxmox VE. Manage VMs, containers, nodes, storage, and snapshots. Node resolution is automatic.</p>
+          <div class="meta">
+            <span class="meta-item"><strong>16</strong> tools (11 read, 5 write)</span>
+            <span class="meta-item">Connects to <strong>Proxmox VE</strong></span>
+            <span class="meta-cmd">npx @glassmkr/bench-proxmox</span>
+          </div>
+          <button class="view-tools-btn" onclick="toggleDetail('proxmox')">View 16 tools <span id="arrow-proxmox">&#9660;</span></button>
+        </div>
+        <div class="tool-detail" id="detail-proxmox">
+          <div class="td-section">Read Tools (11)</div>
+          <div class="td-item"><div class="td-name">list_resources</div><div class="td-desc">All VMs, containers, nodes, and storage in one call.</div><div class="td-input">Input: type (optional: vm, node, storage, all)</div></div>
+          <div class="td-item"><div class="td-name">get_cluster_status</div><div class="td-desc">Cluster health: nodes online/offline, quorum.</div></div>
+          <div class="td-item"><div class="td-name">list_nodes</div><div class="td-desc">All nodes with CPU, memory, uptime.</div></div>
+          <div class="td-item"><div class="td-name">list_vms</div><div class="td-desc">All QEMU VMs. Node auto-resolved.</div><div class="td-input">Input: node (optional), status (optional: running, stopped)</div></div>
+          <div class="td-item"><div class="td-name">get_vm</div><div class="td-desc">Full VM details: config + current status. Auto-resolves node.</div><div class="td-input">Input: vmid (required)</div></div>
+          <div class="td-item"><div class="td-name">list_containers</div><div class="td-desc">All LXC containers.</div><div class="td-input">Input: node (optional), status (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_container</div><div class="td-desc">Full container details. Auto-resolves node.</div><div class="td-input">Input: vmid (required)</div></div>
+          <div class="td-item"><div class="td-name">list_storage</div><div class="td-desc">Storage pools across the cluster.</div><div class="td-input">Input: node (optional)</div></div>
+          <div class="td-item"><div class="td-name">list_snapshots</div><div class="td-desc">Snapshots for a VM or container.</div><div class="td-input">Input: vmid (required)</div></div>
+          <div class="td-item"><div class="td-name">list_tasks</div><div class="td-desc">Recent cluster tasks: backups, migrations, start/stop.</div><div class="td-input">Input: node (optional), vmid (optional), limit (optional)</div></div>
+          <div class="td-item"><div class="td-name">get_task_status</div><div class="td-desc">Status of a specific task.</div><div class="td-input">Input: upid (required)</div></div>
+          <div class="td-section">Write Tools (5, require confirmation)</div>
+          <div class="td-item"><div class="td-name">vm_power<span class="write-badge">write</span></div><div class="td-desc">Start, stop, shutdown, or reset a VM.</div><div class="td-input">Input: vmid (required), action (required: start, stop, shutdown, reset)</div></div>
+          <div class="td-item"><div class="td-name">container_power<span class="write-badge">write</span></div><div class="td-desc">Start, stop, or shutdown a container.</div><div class="td-input">Input: vmid (required), action (required: start, stop, shutdown)</div></div>
+          <div class="td-item"><div class="td-name">create_snapshot<span class="write-badge">write</span></div><div class="td-desc">Create a snapshot of a VM or container.</div><div class="td-input">Input: vmid (required), name (required), description, vmstate (optional)</div></div>
+          <div class="td-item"><div class="td-name">delete_snapshot<span class="write-badge">write</span></div><div class="td-desc">Delete a snapshot. Irreversible.</div><div class="td-input">Input: vmid (required), snapshot_name (required)</div></div>
+          <div class="td-item"><div class="td-name">confirm_action</div><div class="td-desc">Execute a previously requested write operation.</div><div class="td-input">Input: token (required)</div></div>
+          <a class="docs-link" href="https://github.com/glassmkr/bench/tree/main/packages/proxmox">Full documentation &rarr;</a>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section>
+      <h2 class="section-header">Quick Start</h2>
+      <div class="code-block">
+        <div class="code-header">Add to your MCP client config (Claude Code, Cursor, etc.)</div>
+        <pre>{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"netdata"</span>: {
+      <span class="key">"command"</span>: <span class="string">"npx"</span>,
+      <span class="key">"args"</span>: [<span class="string">"@glassmkr/bench-netdata"</span>],
+      <span class="key">"env"</span>: {
+        <span class="key">"NETDATA_URL"</span>: <span class="string">"http://your-server:19999"</span>
+      }
+    }
+  }
+}</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section>
+      <h2 class="section-header">Philosophy</h2>
+      <p class="philosophy">
+        <em>Named after the glassblower's workbench.</em> Every tool forged for a specific purpose, tested in production, open source.
+        <span class="highlight">Read tools</span> execute freely. <span class="highlight">Write tools</span> require explicit confirmation.
+        Credentials stay in environment variables, never in MCP messages.
+        <a href="https://glassmkr.com">Learn more about Glassmkr</a>.
+      </p>
+    </section>
+
+    <footer style="padding: 48px 0; text-align: center; border-top: 1px solid var(--surface-border);">
+      <p style="color: var(--text-tertiary); font-size: 13px;">MIT License. Built by <a href="https://glassmkr.com" style="color: var(--text-secondary); text-decoration: none;">Glassmkr</a>.</p>
+      <p style="margin-top: 12px; color: var(--text-tertiary); font-size: 13px;">
+        <a href="https://github.com/glassmkr/bench" style="color: var(--text-secondary); text-decoration: none;">GitHub</a>
+        &middot; <a href="https://glassmkr.com" style="color: var(--text-secondary); text-decoration: none;">glassmkr.com</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleDetail(name) {
+      const detail = document.getElementById('detail-' + name);
+      const arrow = document.getElementById('arrow-' + name);
+      const card = document.getElementById('card-' + name);
+      const isOpen = detail.classList.contains('expanded');
+      detail.classList.toggle('expanded');
+      arrow.innerHTML = isOpen ? '&#9660;' : '&#9650;';
+      card.classList.toggle('has-detail', !isOpen);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "@glassmkr/bench-proxmox",
+  "version": "0.1.0",
+  "description": "MCP server for Proxmox VE. Manage VMs, containers, nodes, storage, and snapshots.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "bench-proxmox": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod 755 dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["mcp", "proxmox", "virtualization", "infrastructure", "ai-agents", "kvm", "lxc"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glassmkr/bench.git",
+    "directory": "packages/proxmox"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@glassmkr/bench-shared": "*",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}

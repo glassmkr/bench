@@ -2,7 +2,7 @@
 
 Infrastructure tools for AI agents. Each one does one thing well.
 
-Open-source MCP servers for Netdata, IPMI, Kayako, and more. Built by [Glassmkr](https://glassmkr.com).
+Open-source MCP servers for Netdata, IPMI, Proxmox, and more. Built by [Glassmkr](https://glassmkr.com).
 
 Named after the glassblower's workbench: the station where every tool hangs within arm's reach, organized by purpose, each one forged for a specific job.
 
@@ -11,8 +11,8 @@ Named after the glassblower's workbench: the station where every tool hangs with
 | Tool | Connects to | Status | Install |
 |------|------------|--------|---------|
 | [bench-netdata](packages/netdata/) | Netdata monitoring | Stable | `npx @glassmkr/bench-netdata` |
-| bench-ipmi | IPMI/BMC hardware management | Planned | -- |
-| bench-kayako | Kayako Classic helpdesk | Planned | -- |
+| [bench-ipmi](packages/ipmi/) | IPMI/BMC hardware management | Stable | `npx @glassmkr/bench-ipmi` |
+| [bench-proxmox](packages/proxmox/) | Proxmox VE | Stable | `npx @glassmkr/bench-proxmox` |
 
 ## Quick Start
 

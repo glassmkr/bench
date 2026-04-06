@@ -1,0 +1,31 @@
+{
+  "name": "@glassmkr/bench-ipmi",
+  "version": "0.1.0",
+  "description": "MCP server for IPMI/BMC hardware management. Power control, sensors, event logs, boot device, chassis status.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "bench-ipmi": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod 755 dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["mcp", "ipmi", "bmc", "hardware", "infrastructure", "ai-agents", "hosting"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glassmkr/bench.git",
+    "directory": "packages/ipmi"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@glassmkr/bench-shared": "*",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
