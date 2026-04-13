@@ -1,0 +1,25 @@
+name: Publish to npm
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: npm publish (workspaces)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install
+      - run: npm run build
+      # Publishes every workspace package with provenance. npm no-ops if the
+      # version is already published. Packages marked "private": true are skipped.
+      - run: npm publish --workspaces --access public --provenance
